@@ -60,19 +60,55 @@ const argHandler = async (message, next, wiggle) => {
 	}
 
 	if(message.args.length < command.args.filter(arg => !arg.optional).length) {
-		message.channel.createMessage(message.t("wiggle.missingArgs", { command: command.name, usage: command.usage }));
-		return false;
+		if(command.embedError === true) {
+			return message.channel.createEmbed({
+				fields: [
+					{
+						name: message.t("words.input"),
+						value: message.originalContent
+					},
+					{
+						name: message.t("words.error"),
+						value: message.t("wiggle.missingArgs", { command: command.name, usage: command.usage })
+					}
+				],
+				color: 0xE74C3C,
+				timestamp: new Date(),
+				footer: {
+					text: message.t("wiggle.embed.footer",
+						{ tag: `${message.author.username}#${message.author.discriminator}` })
+				}
+			});
+		} else {
+			return message.channel.createMessage(message.t("wiggle.missingArgs",
+				{ command: command.name, usage: command.usage }));
+		}
 	}
-
 	for(let i = 0; i < message.args.length; i++) {
 		let arg = message.args[i];
-		let argOptions = command.args[i] || { type: "text" };
+		let argOptions = command.args[i];
 
 		try {
 			message.args[i] = await resolver[argOptions.type](arg, message, argOptions);
 		} catch(err) {
-			message.channel.createMessage(message.t(err.message, err.data));
-			return false;
+			if(command.embedError === true) {
+				return message.channel.createEmbed({
+					fields: [
+						{
+							name: message.t("words.error"),
+							value: message.t(err.message, err.data)
+						}
+					],
+					color: 0xE74C3C,
+					timestamp: new Date(),
+					footer: {
+						text: message.t("wiggle.embed.footer",
+							{ tag: `${message.author.username}#${message.author.discriminator}` })
+					}
+				});
+			} else {
+				return message.channel.createMessage(message.t(err.message, err.data));
+			}
 		}
 	}
 
