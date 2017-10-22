@@ -1,5 +1,6 @@
 {
 	"wiggle.commands.error.guildOnly": "This command can only be used in guilds",
+	"wiggle.embed.footer": "Asked by {{tag}}",
 	"wiggle.locale.invalidPlaceholder": "< **Invalid placeholder (`{{placeholder}}` is not defined). Please report this to a developer** >",
 	"wiggle.locale.invalidContext": "Invalid context (`{{context}}` does not exist). Please report this to a developer",
 	"wiggle.missingArgs": "You are missing some arguments! Correct usage: `{{command}} {{usage}}`",
@@ -16,5 +17,7 @@
 	"wiggle.resolver.error.noUserFound": "No user was found",
 	"wiggle.resolver.error.cantResolveMember": "The member argument can only be used when commands are executed in guilds",
 	"wiggle.resolver.error.noMemberFound": "A user was found, but they are not in the server",
-	"wiggle.resolver.error.noImage": "No image could be resolved. Please give an attachment, link, emoji, or user"
+	"wiggle.resolver.error.noImage": "No image could be resolved. Please give an attachment, link, emoji, or user",
+	"words.error": "Error",
+	"words.input": "Input"
 }
