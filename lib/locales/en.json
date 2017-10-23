@@ -21,6 +21,5 @@
 	"words.error": "Error",
 	"words.input": "Input",
 	"middleware.error.wrongFlag": "You used a wrong flag! Correct usage:\n`{{command}} {{usage}}`",
-	"middleware.error.wrongArg": "You used a wrong argument! Correct usage:\n`{{command}} {{usage}}`",
-	"ping.success": "Pong! {{ms}}ms"
+	"middleware.error.wrongArg": "You used a wrong argument! Correct usage:\n`{{command}} {{usage}}`"
 }
