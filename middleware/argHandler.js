@@ -80,6 +80,7 @@ module.exports = async (message, next, wiggle) => {
     // since args will follow the same order as message.command.args
     for(let i = 0, n = args.length; i < n; i++) {
         const commandArg = message.command.args[i];
+        if(!commandArg) break;
         try {
             args[i] = await resolver[commandArg.type](args[i], message, commandArg.name);
         } catch(err) {
