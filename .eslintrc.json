@@ -89,9 +89,9 @@
 			"allowArrowFunctions": true
 		}],
 		"id-length": ["error", {
-			"exceptions": ["i", "j", "a", "b", "t"]
+			"exceptions": ["i", "j", "a", "b", "t", "n", "m"]
 		}],
-		"indent": ["error", "tab", {
+		"indent": ["error", 4, {
 			"SwitchCase": 1
 		}],
 		"key-spacing": "error",

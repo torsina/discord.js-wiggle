@@ -17,7 +17,7 @@ Wiggle Properties:
 * categories\<Object>
 	* Categories being used by the Wiggle Instance
 	* Each category is added once `<Wiggle>.use(category)` is called
-* erisClient\<Map>
+* discordClient\<Map>
 	* Eris Discord Client.
 	* Property set once `<Wiggle>.set("token", <token>)` is called
 * locals\<Object>
@@ -26,7 +26,7 @@ Wiggle Properties:
 
 Wiggle Methods:
 * connect()
-	* Equivalent to `<Wiggle>.erisClient.connect()`
+	* Equivalent to `<Wiggle>.discordClient.connect()`
 	* Returns: instance of Wiggle that the method was called on
 * command(name\<String>, _options\<Object>_, runFunction\<Function (context)>)
 	* Creates a command registered under the Wiggle instance, then uses it
@@ -37,7 +37,7 @@ Wiggle Methods:
 * set(name\<String>, value\<*>)
 	* Sets the option `name` to `value`
 	* Options:
-		* token\<String> - Creates a Eris client with the token `value` and sets `<Wiggle>.erisClient` to the new client
+		* token\<String> - Creates a Eris client with the token `value` and sets `<Wiggle>.discordClient` to the new client
 		* commands\<Map> - Directory where commands are, composed of other directories containing JavaScript files which become commands. See advanced example for more information
 		* listeners\<String> - Directory where listeners are, with file names of event names. Each listener is used via `<Wiggle>.use`
 		* locales\<String> - Directory of locales to use, each file name should be that of the locale
@@ -72,6 +72,7 @@ Wiggle Methods:
 		* argHandler\<Function()>
 			* Parses arguments into their correct types based off user input
 			* Adds a `message.args` property (array of parsed arguments)
+			* Adds a `message.flags` property (object of parsed flags)
 			* Not guaranteed to call the `next` callback, if a user gives invald input or not enough arguments, the command responds with a error
 			* Use with `message` event
 		* dbots, dbotsOrg, carbonitex \<Function(\<Object{key:\<String>}>)>
@@ -153,6 +154,9 @@ Constructor options (all optional):
 			* optional\<Boolean>
 				* Whether or not the argument is optional
 				* Default value: `false`
+			* correct\<Array\<String>>
+			    * Array of the available values for this argument
+			    * Default value: undefined
 			* Other fields can be added. Extra ones will be used as options when resolving types (ex. `min` and `max` fields for `int` and `float` types)
 		* Upon execution, `<Message>.args` will be an array containing the arguments resolved to their types
 	* Default value: `[]`

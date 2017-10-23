@@ -3,7 +3,7 @@
 	"wiggle.embed.footer": "Asked by {{tag}}",
 	"wiggle.locale.invalidPlaceholder": "< **Invalid placeholder (`{{placeholder}}` is not defined). Please report this to a developer** >",
 	"wiggle.locale.invalidContext": "Invalid context (`{{context}}` does not exist). Please report this to a developer",
-	"wiggle.missingArgs": "You are missing some arguments! Correct usage: `{{command}} {{usage}}`",
+	"wiggle.missingArgs": "You are missing some arguments! Correct usage:\n`{{command}} {{usage}}`",
 	"wiggle.resolver.error.booleanError": "Invalid input, please only use `enable, yes, true, 1` or `disable, no, false, 0`",
 	"wiggle.resolver.error.channelNotFound": "No channel found",
 	"wiggle.resolver.error.emojiNotFound": "No emoji found",
@@ -19,5 +19,8 @@
 	"wiggle.resolver.error.noMemberFound": "A user was found, but they are not in the server",
 	"wiggle.resolver.error.noImage": "No image could be resolved. Please give an attachment, link, emoji, or user",
 	"words.error": "Error",
-	"words.input": "Input"
+	"words.input": "Input",
+	"middleware.error.wrongFlag": "You used a wrong flag! Correct usage:\n`{{command}} {{usage}}`",
+	"middleware.error.wrongArg": "You used a wrong argument! Correct usage:\n`{{command}} {{usage}}`",
+	"ping.success": "Pong! {{ms}}ms"
 }
