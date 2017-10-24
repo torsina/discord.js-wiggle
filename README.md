@@ -182,7 +182,7 @@ Constructor options (all optional):
 	* Default value: `false`
 * embedError\<Boolean>
     * If true, <command>.EmbedError\<Object> will output a RichEmbed, will output the result of <message>.t otherwise.
-    * Default value: `faalse`
+    * Default value: `false`
 * Any other option can be specified, but they are not used for anything. Can be used to pass extra data trhough a command
 
 Properties:
