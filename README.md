@@ -216,6 +216,15 @@ The command run function is called with a parameter:
 	* guild\<Object>
 		* Guild the message was sent in
 		* Reference to message.channel.guild
+	* EmbedError\<Function(message\<Object>, config\<Object>, input\<Boolean>)>
+	    * Function that creates an embed format for your errors
+	    * config accepts:
+	        * error\<String> is the input for message.t
+	        * data\<Object> is the data needed for message.t
+	        * color\<String|Number> is the color of the embed
+	            * Default value is 0xE74C3C
+	    * input\<Boolean> weather the embed should display the input that leads to this error
+	        * Default value: true
 	* message\<Object>
 		* The message that was sent
 	* reply\<Function(content\<Object|String>, file\<Object>)>
