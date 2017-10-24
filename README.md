@@ -225,6 +225,7 @@ The command run function is called with a parameter:
 	            * Default value is 0xE74C3C
 	    * input\<Boolean> weather the embed should display the input that leads to this error
 	        * Default value: true
+	    * output\<Object> will be a RichEmbed if the option command#embedError\<Boolean> is true. Will be the result of message.t otherwise.
 	* message\<Object>
 		* The message that was sent
 	* reply\<Function(content\<Object|String>, file\<Object>)>
