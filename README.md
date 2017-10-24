@@ -180,6 +180,9 @@ Constructor options (all optional):
 * replyResult\<Boolean>
 	* If true, `<context>.reply` is called with the return value from the run function of the command
 	* Default value: `false`
+* embedError\<Boolean>
+    * If true, <command>.EmbedError\<Object> will output a RichEmbed, will output the result of <message>.t otherwise.
+    * Default value: `faalse`
 * Any other option can be specified, but they are not used for anything. Can be used to pass extra data trhough a command
 
 Properties:
