@@ -194,6 +194,7 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
         const usedArg = args.join(" ");
         try {
             usage += argTree.label ? `<${argTree.label}> ` : "<value>";
+            if(argTree.last) return result;
             if(usedArg === "") {
                 const error = {
                     error: "wiggle.partialArgsEnd",
