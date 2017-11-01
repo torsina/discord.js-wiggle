@@ -160,6 +160,14 @@ Constructor options (all optional):
 			* Other fields can be added. Extra ones will be used as options when resolving types (ex. `min` and `max` fields for `int` and `float` types)
 		* Upon execution, `<Message>.args` will be an array containing the arguments resolved to their types
 	* Default value: `[]`
+* argTree\<Object>
+    * Object containing a tree of arg choice
+    * <arg>.correct is not used here, it gets generated from the property names of <argTree>.next
+    * <arg>.label is optional, the default value is generated from the property names of <argTree>.next
+    * The label of the last argument in the chain has "value" as default value
+    * Will replace <command>.args if used
+    * See examples for more detail
+    * Output will still be in <context>.args as an array
 * caseSensitive\<Boolean>
 	* Whether or not the command input is case sensitive
 	* If false, `<Message>.content` is converted to lower case
