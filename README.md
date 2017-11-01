@@ -143,6 +143,7 @@ Constructor options (all optional):
 				* `member` - returns a member from the server the command was executed in
 				* `role` - returns a role
 				* `text` - returns the plain input
+				    * Accepts `max` option for string length
 				* `textChannel` - returns a text channel
 				* `user` - returns a user
 				* `voiceChannel` - returns a voice channel

@@ -155,18 +155,19 @@ module.exports = async (context, next, wiggle) => {
 };
 
 async function recursiveArgTree(argTree, args, message, result = [], usage = "") {
-    const usedArgs = args.slice();
+    const argsLeft = args.slice();
     if(argTree.next) {
         try {
             const nextArgs = Object.keys(argTree.next);
-            const nextIndex = nextArgs.indexOf(usedArgs[0]);
+            const nextIndex = nextArgs.indexOf(argsLeft[0]);
             const next = nextArgs[nextIndex];
-            if(nextIndex === -1) usage += argTree.label ? `${argTree.label} ` : `<${nextArgs.join(" | ")}> `;
-            else {
+            if(nextIndex === -1) {
+                usage += argTree.label ? `${argTree.label} ` : `<${nextArgs.join(" | ")}> `;
+            } else {
                 usage += argTree.label ? `${argTree.label} ` : `${next} `;
             }
-            result[result.length] = await resolver[argTree.type](usedArgs[0], message, argTree);
-            usedArgs.splice(0, 1);
+            result[result.length] = await resolver[argTree.type](argsLeft[0], message, argTree);
+            argsLeft.splice(0, 1);
             if(nextIndex === -1) {
                 const error = {
                     error: "wiggle.partialArgs",
@@ -178,7 +179,7 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
                 const { embed } = new EmbedError(message, error);
                 message.channel.send(embed);
             } else {
-                return await recursiveArgTree(argTree.next[nextArgs[nextIndex]], usedArgs, message, result, usage);
+                return await recursiveArgTree(argTree.next[nextArgs[nextIndex]], argsLeft, message, result, usage);
             }
         } catch(err) {
             const error = {

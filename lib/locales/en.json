@@ -10,6 +10,7 @@
 	"wiggle.resolver.error.NaN": "Please only enter numbers",
 	"wiggle.resolver.error.belowMin": "Please only enter numbers above `{{min}}`",
 	"wiggle.resolver.error.aboveMax": "Please only enter numbers below `{{max}}`",
+	"wiggle.resolver.error.stringAboveMax": "Please only enter values that contains below `{{max}}` characters",
 	"wiggle.resolver.error.invalidLink": "Invalid link",
 	"wiggle.resolver.error.roleNotFound": "No role found",
 	"wiggle.resolver.error.invalidInvite": "Invalid invite given",
