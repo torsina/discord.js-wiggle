@@ -110,6 +110,7 @@ module.exports = async (context, next, wiggle) => {
                 return context.channel.send(embed);
             }
         }
+        context.args = args;
     }
     // parse the value of each used flag
     for(let i = 0, n = usedFlags.length; i < n; i++) {
