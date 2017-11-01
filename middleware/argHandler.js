@@ -1,14 +1,14 @@
 const resolver = require("../lib/resolver");
 const EmbedError = require("../lib/EmbedError");
-module.exports = async (message, next, wiggle) => {
-    const { command } = message;
+module.exports = async (context, next, wiggle) => {
+    const { command } = context;
     if(!command) return next();
     const { embedError } = command;
-    const content = message.originalContent.split(" ").slice(1);
+    const content = context.originalContent.split(" ").slice(1);
     const usedFlags = [];
     const flags = {};
     const args = [];
-    const flagsCopy = message.command.flags.slice();
+    const flagsCopy = context.command.flags.slice();
     let flagStart, quoted, bigArg = {};
     for(let i = 0, n = content.length; i < n; i++) {
         const index = content[i];
@@ -44,11 +44,11 @@ module.exports = async (message, next, wiggle) => {
                         usage: command.usage
                     }
                 };
-                const { embed } = new EmbedError(message, error);
-                return message.channel.send(embed);
+                const { embed } = new EmbedError(context, error);
+                return context.channel.send(embed);
             } else {
-                return message.channel.send(
-                    message.t("middleware.error.wrongFlag", { command: command.name, usage: command.usage }));
+                return context.channel.send(
+                    context.t("middleware.error.wrongFlag", { command: command.name, usage: command.usage }));
             }
             // check if we started to loop through the flags
         } else if(!flagStart) {
@@ -79,24 +79,24 @@ module.exports = async (message, next, wiggle) => {
         }
     }
     // since args will follow the same order as message.command.args
-    const { argTree } = message.command;
+    const { argTree } = context.command;
     if(argTree) {
-        let result = await recursiveArgTree(argTree, args, message);
+        let result = await recursiveArgTree(argTree, args, context);
         if(!result) return;
-        message.args = result;
+        context.args = result;
     } else {
         for(let i = 0, n = args.length; i < n; i++) {
-            const commandArg = message.command.args[i];
+            const commandArg = context.command.args[i];
             if(!commandArg) break;
             try {
-                args[i] = await resolver[commandArg.type](args[i], message, commandArg.name);
+                args[i] = await resolver[commandArg.type](args[i], context, commandArg.name);
             } catch(err) {
                 const error = {
                     error: err.message,
                     data: err.data
                 };
-                const { embed } = new EmbedError(message, error);
-                return message.channel.send(embed);
+                const { embed } = new EmbedError(context, error);
+                return context.channel.send(embed);
             }
             if(commandArg.correct && commandArg.correct.indexOf(args[i]) === -1) {
                 const error = {
@@ -106,8 +106,8 @@ module.exports = async (message, next, wiggle) => {
                         usage: command.usage
                     }
                 };
-                const { embed } = new EmbedError(message, error);
-                return message.channel.send(embed);
+                const { embed } = new EmbedError(context, error);
+                return context.channel.send(embed);
             }
         }
     }
@@ -120,17 +120,17 @@ module.exports = async (message, next, wiggle) => {
         const max = nextIndex ? nextIndex.index : content.length;
         const value = content.slice(min, max).join(" ");
         try {
-            flags[index.flag.name] = await resolver[index.flag.type](value, message, index.flag.name);
+            flags[index.flag.name] = await resolver[index.flag.type](value, context, index.flag.name);
         } catch(err) {
             if(embedError) {
                 const error = {
                     error: err.message,
                     data: err.data
                 };
-                const { embed } = new EmbedError(message, error);
-                return message.channel.send(embed);
+                const { embed } = new EmbedError(context, error);
+                return context.channel.send(embed);
             } else {
-                return message.channel.send(message.t(err.message, err.data));
+                return context.channel.send(context.t(err.message, err.data));
             }
         }
     }
@@ -144,13 +144,13 @@ module.exports = async (message, next, wiggle) => {
                     usage: command.usage
                 }
             };
-            const { embed } = new EmbedError(message, error);
-            return message.channel.send(embed);
+            const { embed } = new EmbedError(context, error);
+            return context.channel.send(embed);
         } else {
-            return message.t("wiggle.missingArgs", { command: command.name, usage: command.usage });
+            return context.t("wiggle.missingArgs", { command: command.name, usage: command.usage });
         }
     }
-    message.flags = flags;
+    context.flags = flags;
     return next();
 };
 
@@ -169,7 +169,7 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
             usedArgs.splice(0, 1);
             if(nextIndex === -1) {
                 const error = {
-                    error: "wiggle.missingArgs",
+                    error: "wiggle.partialArgs",
                     data: {
                         command: message.command.name,
                         usage: usage
@@ -195,7 +195,7 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
             usage += argTree.label ? `<${argTree.label}> ` : "<value>";
             if(usedArg === "") {
                 const error = {
-                    error: "wiggle.missingArgs",
+                    error: "wiggle.partialArgsEnd",
                     data: {
                         command: message.command.name,
                         usage: usage

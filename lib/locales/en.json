@@ -21,5 +21,7 @@
 	"words.error": "Error",
 	"words.input": "Input",
 	"middleware.error.wrongFlag": "You used a wrong flag! Correct usage:\n`{{command}} {{usage}}`",
-	"middleware.error.wrongArg": "You used a wrong argument! Correct usage:\n`{{command}} {{usage}}`"
+	"middleware.error.wrongArg": "You used a wrong argument! Correct usage:\n`{{command}} {{usage}}`",
+	"wiggle.partialArgs": "You are missing some arguments! For more detail on this option, use:\n`{{command}} {{usage}}`",
+	"wiggle.partialArgsEnd": "You are missing the last argument of this command! Use:\n`{{command}} {{usage}}`"
 }
