@@ -19,5 +19,30 @@ module.exports = {
         short: "h",
         default: false,
         aliases: ["http"]
-    }]
+    }],
+    argTree: {
+        type: "text",
+        // here, the correct values of args[0] are name and bet, the label is "name | bet"
+        next: {
+            name: {
+                type: "text",
+                label: "name value"
+            },
+            bet: {
+                type: "text",
+                label: "min | max",
+                next: {
+                    min: {
+                        type: "int",
+                        min: 0,
+                        label: "value"
+                    },
+                    max: {
+                        type: "int",
+                        min: 0
+                    }
+                }
+            }
+        }
+    }
 };
