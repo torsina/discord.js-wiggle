@@ -160,7 +160,10 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
     if(argTree.next && !(argTree.last && argsLeft.length === 0)) {
         try {
             const nextArgs = Object.keys(argTree.next);
-            const nextIndex = nextArgs.indexOf(argsLeft[0]);
+            let nextIndex = nextArgs.indexOf(argsLeft[0]);
+            if(nextIndex === -1) {
+                nextIndex = nextArgs.indexOf("VALUE");
+            }
             const next = nextArgs[nextIndex];
             if(nextIndex === -1) {
                 usage += argTree.label ? `${argTree.label} ` : `<${nextArgs.join(" | ")}> `;
