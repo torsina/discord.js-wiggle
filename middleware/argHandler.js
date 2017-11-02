@@ -157,8 +157,6 @@ module.exports = async (context, next, wiggle) => {
 
 async function recursiveArgTree(argTree, args, message, result = [], usage = "") {
     const argsLeft = args.slice();
-    console.log(argTree.last);
-    console.log(argTree)
     if(argTree.next && !(argTree.last && argsLeft.length === 0)) {
         try {
             const nextArgs = Object.keys(argTree.next);
