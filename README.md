@@ -167,7 +167,7 @@ Constructor options (all optional):
     * <arg>.label is optional, the default value is generated from the property names of <argTree>.next
     * The label of the last argument in the chain has "value" as default value
     * Will replace <command>.args if used
-    * <arg>.last\<Boolean> is optional, it prevents the bot asking for a value after this arg if true
+    * <arg>.last\<Boolean> is optional, it prevents the bot asking for a value after this arg if true. Consider it as a possible end for the arg chain
     * See examples for more detail
     * Output will still be in <context>.args as an array
 * caseSensitive\<Boolean>
