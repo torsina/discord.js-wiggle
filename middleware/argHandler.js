@@ -184,7 +184,6 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
                 return await recursiveArgTree(argTree.next[nextArgs[nextIndex]], argsLeft, message, result, usage);
             }
         } catch(err) {
-            console.error(err);
             const error = {
                 error: err.message,
                 data: err.data
@@ -213,7 +212,6 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
             result[result.length] = await resolver[argTree.type](usedArg, message, argTree);
             return result;
         } catch(err) {
-            console.error(err);
             const error = {
                 error: err.message,
                 data: err.data
