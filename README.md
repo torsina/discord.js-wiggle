@@ -1,5 +1,5 @@
-# Eris Wiggle
-Command Router made for Eris
+# Disocord.js wiggle
+Command Router made for Eris transposed to Discord.js
 
 ## Wiggle
 Creating a Wiggle Instance
@@ -218,6 +218,9 @@ The command run function is called with a parameter:
 	* author\<Object>
 		* Author of message
 		* Reference to message.author
+	* member\<Object>
+		* GuildMember of message
+		* Reference to message.member
 	* category\<String>
 		* Category of command used
 		* Reference to message.command.category
