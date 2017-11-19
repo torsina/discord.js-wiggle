@@ -81,7 +81,12 @@ module.exports = async (context, next, wiggle) => {
     // since args will follow the same order as message.command.args
     const { argTree } = context.command;
     if(argTree) {
-        context.args = await recursiveArgTree(argTree, args, context);
+        const result = await recursiveArgTree(argTree, args, context);
+        if(!result) {
+            context.args = [];
+        } else {
+            context.args = result;
+        }
     } else {
         for(let i = 0, n = args.length; i < n; i++) {
             const commandArg = context.command.args[i];
