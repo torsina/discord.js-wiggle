@@ -81,9 +81,7 @@ module.exports = async (context, next, wiggle) => {
     // since args will follow the same order as message.command.args
     const { argTree } = context.command;
     if(argTree) {
-        let result = await recursiveArgTree(argTree, args, context);
-        if(!result) return;
-        context.args = result;
+        context.args = await recursiveArgTree(argTree, args, context);
     } else {
         for(let i = 0, n = args.length; i < n; i++) {
             const commandArg = context.command.args[i];
@@ -123,39 +121,31 @@ module.exports = async (context, next, wiggle) => {
         try {
             flags[index.flag.name] = await resolver[index.flag.type](value, context, index.flag.name);
         } catch(err) {
-            if(embedError) {
-                const error = {
-                    error: err.message,
-                    data: err.data
-                };
-                const { embed } = new EmbedError(context, error);
-                return context.channel.send(embed);
-            } else {
-                return context.channel.send(context.t(err.message, err.data));
-            }
+            const error = {
+                error: err.message,
+                data: err.data
+            };
+            const { embed } = new EmbedError(context, error);
+            return context.channel.send(embed);
         }
     }
     // check if all the mandatory args are here
     if(args.length < command.args.filter(arg => !arg.optional).length) {
-        if(embedError) {
-            const error = {
-                error: "wiggle.missingArgs",
-                data: {
-                    command: command.name,
-                    usage: command.usage
-                }
-            };
-            const { embed } = new EmbedError(context, error);
-            return context.channel.send(embed);
-        } else {
-            return context.t("wiggle.missingArgs", { command: command.name, usage: command.usage });
-        }
+        const error = {
+            error: "wiggle.missingArgs",
+            data: {
+                command: command.name,
+                usage: command.usage
+            }
+        };
+        const { embed } = new EmbedError(context, error);
+        return context.channel.send(embed);
     }
     context.flags = flags;
     return next();
 };
 
-async function recursiveArgTree(argTree, args, message, result = [], usage = "") {
+async function recursiveArgTree(argTree, args, message, result = [], usage = "") { // eslint-disable-line
     const argsLeft = args.slice();
     if(argTree.next && !(argTree.last && argsLeft.length === 0)) {
         try {
@@ -163,8 +153,12 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
             let nextIndex = nextArgs.indexOf(argsLeft[0]);
             const next = nextArgs[nextIndex];
             if(nextIndex === -1) {
-                usage += argTree.label ? `${argTree.label} ` : `<${nextArgs.join(" | ")}> `;
                 nextIndex = nextArgs.indexOf("VALUE");
+                if(nextIndex === -1) {
+                    usage += argTree.label ? `<${argTree.label}> ` : `<VALUE> `;
+                } else {
+                    usage += argTree.label ? `<${argTree.label}> ` : `<${nextArgs.join(" | ")}> `;
+                }
             } else {
                 usage += argTree.label ? `${argTree.label} ` : `${next} `;
             }
@@ -188,7 +182,7 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
                 error: err.message,
                 data: err.data
             };
-            if (error.data) error.data.usage = usage;
+            if(error.data) error.data.usage = usage;
             const { embed } = new EmbedError(message, error);
             message.channel.send(embed);
         }
@@ -206,8 +200,7 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
                     }
                 };
                 const { embed } = new EmbedError(message, error);
-                message.channel.send(embed);
-                return;
+                return message.channel.send(embed);
             }
             result[result.length] = await resolver[argTree.type](usedArg, message, argTree);
             return result;
