@@ -84,6 +84,7 @@ module.exports = async (context, next, wiggle) => {
         const result = await recursiveArgTree(argTree, args, context);
         if(!result) {
             context.args = [];
+            return null;
         } else {
             context.args = result;
         }
