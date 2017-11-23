@@ -60,5 +60,4 @@ typings/
 .idea/
 
 example/commands/default/prefix.js
-example/commands/default/test.js
 example/private.js

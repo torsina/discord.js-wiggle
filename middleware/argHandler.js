@@ -151,7 +151,117 @@ module.exports = async (context, next, wiggle) => {
     return next();
 };
 
+/**
+ * base is the first arg, properties of argTree are choice and the possible argument resolver options(if VALUE is used) for arg 0
+ * choice contains all of the possibilities for arg 0 in the properties keys of this object
+ *
+ * once one level passed, we're in the property of choice corresponding to the argument input,
+ * and the cycle goes over and over again
+ *
+ * VALUE as option means a user input
+ *
+ * the `last` property as option for a argument means that even if the input contains more words than argument, the argument parsing will stop and only one word will be given to the last argument.
+ * there will be no parsing error if the last input argument has `last` set to true in it's options
+ * @param argTree
+ * @param args
+ * @param message
+ * @param result
+ * @param usage
+ * @returns {Promise.<void>}
+ */
 async function recursiveArgTree(argTree, args, message, result = [], usage = "") { // eslint-disable-line
+    try {
+        // copy the arg array
+        const argsLeft = args.slice();
+        const choices = argTree.choice;
+        const choiceArray = Object.keys(choices);
+        let choiceIndex = choiceArray.indexOf(argsLeft[0]);
+        // process the usage string if there is an error in the parsing
+        // this is for the usage of the first argument
+        if(choiceIndex === -1 && result.length === 0) {
+            choiceIndex = choiceArray.indexOf("VALUE");
+            if(choiceIndex === -1) {
+                usage += argTree.label ? `<${argTree.label}> ` : `<${choiceArray.join(" | ")}> `;
+                throw missingArg(message, usage);
+            } else {
+                usage += argTree.label ? `<${argTree.label}> ` : `<${argsLeft[0]}> `;
+            }
+        } else if(result.length === 0) {
+            usage += argTree.label ? `<${argTree.label}> ` : `<${argsLeft[0]}> `;
+        }
+        // get the index of the choice in every case
+        if(choiceIndex === -1) {
+            choiceIndex = choiceArray.indexOf("VALUE");
+            if(choiceIndex === -1) {
+                throw missingArg(message, usage);
+            }
+        }
+        const selectedChoice = choices[choiceArray[choiceIndex]];
+        // set default type to "text"
+        const type = argTree.type || "text";
+        // whether we're at a possible end of path or not
+        // we're using null here since arguments at end of path will equal to null
+        const isEnd = selectedChoice === null || (argTree.last && (argsLeft.length === 1));
+        // wheter we need to concat what's left to the argument input into the last argument
+        const input = selectedChoice === null && argTree.last ? argsLeft.join(" ") : argsLeft[0];
+        // resolve the type of the input
+        result.push(await resolver[type](input, message, argTree));
+        // do the usage of the next argument to have clearer usage display on error
+        // it's useless to do it for the last argument when isEnd is true since there is no more prevision to do
+        if(!(selectedChoice === null) && !isEnd) {
+            const nextChoiceArray = Object.keys(selectedChoice.choice);
+            let nextChoiceIndex = nextChoiceArray.indexOf(argsLeft[1]);
+            if(nextChoiceIndex === -1) {
+                nextChoiceIndex = nextChoiceArray.indexOf("VALUE");
+                if(nextChoiceIndex === -1) {
+                    usage += selectedChoice.label ? `<${selectedChoice.label}> ` : `<${nextChoiceArray.join(" | ")}> `;
+                    throw missingArg(message, usage);
+                } else {
+                    usage += selectedChoice.label ? `<${selectedChoice.label}> ` : `<VALUE> `;
+                }
+            } else {
+                usage += selectedChoice.label ? `<${selectedChoice.label}> ` : `<${argsLeft[1]}> `;
+            }
+        }
+        // if we run out of input argument before the end of the path
+        if(argsLeft.length === 1 && selectedChoice !== null) {
+            throw missingArg(message, usage);
+        }
+        // if there is no more path to follow or we stop at a `last` argument
+        if(isEnd) {
+            return result;
+        } else {
+            argsLeft.splice(0, 1);
+            return await recursiveArgTree(selectedChoice, argsLeft, message, result, usage);
+        }
+    } catch(err) {
+        if(err instanceof EmbedError) {
+            message.channel.send(err.embed);
+            return [];
+        } else if(err instanceof resolver.ResolverError) {
+            const { embed } = new EmbedError(message, {
+                error: err.message,
+                data: err.data
+            });
+            message.channel.send(embed);
+        } else {
+            console.error(err);
+        }
+    }
+}
+
+function missingArg(message, usage) {
+    return new EmbedError(message, {
+        error: "wiggle.missingArgs",
+        data: {
+            command: message.command.name,
+            usage
+        }
+    });
+}
+/**
+ *
+ async function recursiveArgTree(argTree, args, message, result = [], usage = "") { // eslint-disable-line
     const argsLeft = args.slice();
     if(argTree.next && !(argTree.last && argsLeft.length === 0)) {
         try {
@@ -160,11 +270,7 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
             const next = nextArgs[nextIndex];
             if(nextIndex === -1) {
                 nextIndex = nextArgs.indexOf("VALUE");
-                if(nextIndex === -1) {
-                    usage += argTree.label ? `<${argTree.label}> ` : `<VALUE> `;
-                } else {
-                    usage += argTree.label ? `<${argTree.label}> ` : `<${nextArgs.join(" | ")}> `;
-                }
+                usage += argTree.label ? `<${argTree.label}> ` : `<${nextArgs.join(" | ")}> `;
             } else {
                 usage += argTree.label ? `${argTree.label} ` : `${next} `;
             }
@@ -179,6 +285,7 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
                 const { embed } = new EmbedError(message, error);
                 message.channel.send(embed);
             } else {
+                console.log(argTree, argsLeft[0]);
                 result[result.length] = await resolver[argTree.type](argsLeft[0], message, argTree);
                 argsLeft.splice(0, 1);
                 return await recursiveArgTree(argTree.next[nextArgs[nextIndex]], argsLeft, message, result, usage);
@@ -196,7 +303,10 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
         const usedArg = args.join(" ");
         try {
             usage += argTree.label ? `<${argTree.label}> ` : "<value>";
-            if(argTree.last) return result;
+            if(argTree.last) {
+                result.push(usedArg);
+                return result;
+            }
             if(usedArg === "") {
                 const error = {
                     error: "wiggle.partialArgsEnd",
@@ -221,3 +331,5 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
         }
     }
 }
+
+ */
