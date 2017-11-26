@@ -193,6 +193,12 @@ Constructor options (all optional):
 * embedError\<Boolean>
     * If true, <command>.EmbedError\<Object> will output a RichEmbed, will output the result of <message>.t otherwise.
     * Default value: `false`
+* cooldown\<Array|Object|Number>
+ 	* Sets a command's cooldown
+ 	* Can be set to be a certain amount of uses per certain time
+ 	* If an array, the format should be as such: `[time (ms), uses]`
+ 	* If an object, it should be as such; `{ time: <time in ms>, uses: <uses> }`
+ 	* If a number, it should represent the amount of ms between every 1 use
 * Any other option can be specified, but they are not used for anything. Can be used to pass extra data trhough a command
 
 Properties:

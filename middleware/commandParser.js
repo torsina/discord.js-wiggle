@@ -21,6 +21,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
+const EmbedError = require("../lib/EmbedError");
 const discord = require("discord.js");
 const commandParser = async (message, next, wiggle) => {
     let prefixes;
@@ -61,21 +62,24 @@ const commandParser = async (message, next, wiggle) => {
     if(!command) {
         return next();
     } else if(command.command.guildOnly === true && !message.channel.guild) {
-        if(command.command.embedError) {
-            const embed = new discord.RichEmbed();
-            embed.addField(message.t("words.input"), message.originalContent)
-                .addField(message.t("words.error"), message.t("wiggle.commands.error.guildOnly"))
-                .setColor("RED")
-                .setTimestamp()
-                .setFooter(message.t("wiggle.embed.footer", { tag: message.author.tag }));
-            return message.channel.send(embed);
-        } else {
-            return message.channel.send(message.t("wiggle.commands.error.guildOnly"));
-        }
+        const { embed } = new EmbedError(message, { error: "wiggle.commands.error.guildOnly" });
+        return message.channel.send(embed);
     }
 
     if(!command.command.caseSensitive) message.content = message.content.toLowerCase();
+
     message.command = command.command;
+    if(command.command.onCooldown(message.author)) {
+        const error = {
+            error: "wiggle.commands.error.cooldown",
+            data: {
+                seconds: command.command.cooldown.time / 1000,
+                times: command.command.cooldown.uses
+            }
+        };
+        const { embed } = new EmbedError(message, error);
+        return message.channel.send(embed);
+    }
 
     return next();
 };
