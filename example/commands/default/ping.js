@@ -18,5 +18,6 @@ module.exports = {
         default: false,
         aliases: ["http"]
     }],
-    cooldown: 5000
+    cooldown: 5000,
+    nsfwOnly: true
 };

@@ -187,6 +187,9 @@ Constructor options (all optional):
 * guildOnly\<Boolean>
 	* Whether or not this command may only be executed in guilds
 	* Default value: `false`
+* nsfwOnly\<Boolean>
+	* Whether or not this command may only be executed in nsfw channels
+	* Default value: `false`
 * replyResult\<Boolean>
 	* If true, `<context>.reply` is called with the return value from the run function of the command
 	* Default value: `false`

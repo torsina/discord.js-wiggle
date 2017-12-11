@@ -22,7 +22,6 @@
  SOFTWARE.
  */
 const EmbedError = require("../lib/EmbedError");
-const discord = require("discord.js");
 const commandParser = async (message, next, wiggle) => {
     let prefixes;
     if(wiggle.get("getPrefixes")) prefixes = await wiggle.get("getPrefixes")(message);
@@ -69,15 +68,20 @@ const commandParser = async (message, next, wiggle) => {
     if(!command.command.caseSensitive) message.content = message.content.toLowerCase();
 
     message.command = command.command;
-    if(command.command.onCooldown(message.author)) {
+    if(message.command.onCooldown(message.author)) {
         const error = {
             error: "wiggle.commands.error.cooldown",
             data: {
-                seconds: command.command.cooldown.time / 1000,
-                times: command.command.cooldown.uses
+                seconds: message.command.cooldown.time / 1000,
+                times: message.command.cooldown.uses
             }
         };
         const { embed } = new EmbedError(message, error);
+        return message.channel.send(embed);
+    }
+    console.log(message.command);
+    if(message.command.nsfwOnly && message.channel && !message.channel.nsfw) {
+        const { embed } = new EmbedError(message, { error: "wiggle.commands.error.nsfwOnly" });
         return message.channel.send(embed);
     }
 
