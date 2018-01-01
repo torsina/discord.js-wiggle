@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/torsina/eris-wiggle.git"
+    "url": "git+https://github.com/torsina/discord.js-wiggle.git"
   },
   "keywords": [
     "discord.js",
@@ -19,7 +19,7 @@
   "author": "minemidnight",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/torsina/eris-wiggle/issues"
+    "url": "https://github.com/torsina/discord.js-wiggle/issues"
   },
   "dependencies": {
     "discord.js": "^11.2.1"

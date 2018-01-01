@@ -3,10 +3,10 @@ Command Router made for Eris transposed to Discord.js
 
 ## Wiggle
 Creating a Wiggle Instance
-* Creation: call the function returned `require("eris-wiggle")`
+* Creation: call the function returned `require("discord.js-wiggle")`
 * ex:
 ```js
-const wiggle = require("eris-wiggle");
+const wiggle = require("discord.js-wiggle");
 const client = wiggle();
 ```
 
@@ -18,7 +18,7 @@ Wiggle Properties:
 	* Categories being used by the Wiggle Instance
 	* Each category is added once `<Wiggle>.use(category)` is called
 * discordClient\<Map>
-	* Eris Discord Client.
+	* Discord.js Client.
 	* Property set once `<Wiggle>.set("token", <token>)` is called
 * locals\<Object>
 	* Object that can be used to pass values across code
@@ -37,11 +37,11 @@ Wiggle Methods:
 * set(name\<String>, value\<*>)
 	* Sets the option `name` to `value`
 	* Options:
-		* token\<String> - Creates a Eris client with the token `value` and sets `<Wiggle>.discordClient` to the new client
+		* token\<String> - Creates a Discord.js client with the token `value` and sets `<Wiggle>.discordClient` to the new client
 		* commands\<Map> - Directory where commands are, composed of other directories containing JavaScript files which become commands. See advanced example for more information
 		* listeners\<String> - Directory where listeners are, with file names of event names. Each listener is used via `<Wiggle>.use`
 		* locales\<String> - Directory of locales to use, each file name should be that of the locale
-		* clientOptions\<Object> - Options used when constructing Eris client
+		* clientOptions\<Object> - Options used when constructing the Discord.js client
 		* commandOptions\<Object> - Default command options to use when creating commands
 		* localeFunction\<Function(message\<Message>)> - Function expecting `message.locale` and `message.channel.guild.locale` if applicable to be set, for usage with `message.t` (read about locales below)
 		* prefixes\<Array\<String>> - Prefixes used by the command parser middleware. Each string is turned into a regular expression. Not case  sensitive
@@ -56,7 +56,7 @@ Wiggle Methods:
 		* (\<Category|String>, \<Function(message\<Object>, next\<Function()>, wiggle\<Wiggle>)>) - Function gets called each time a command from the category is used. Category can also be a string of the name of the category as long as `<WiggleInstace>.use(<Category>)` was called first
 		* (\<Command|String>, \<Function(message\<Object>, next\<Function()>, wiggle\<Wiggle>)>) - Function gets called each the command is used. Command can also be a string of the name of the command
 		* If multiple functions are used with the middleware, they will all be used as middlewares for the same thing (ex: `client.use("message", fn1, fn2)` will both go to message)
-	* `...params` represents all the parameters of the Eris event in use
+	* `...params` represents all the parameters of the Discord.js event in use
 	* The **next** parameter
 		* When called, it moves onto the next middleware function.
 		* If next isn't called, the middleware cycle ends
@@ -67,7 +67,7 @@ Wiggle Methods:
 		* The rest, besides commands, in order of which they were added
 		* All commands are last (the execution of them)
 	* Built in middleware
-		* Accessing: `wiggle.middleware` is an object of middlewares built in (not a instance of wiggle, but what is returned from `require("eris-wiggle")`)
+		* Accessing: `wiggle.middleware` is an object of middlewares built in (not a instance of wiggle, but what is returned from `require("discord.js-wiggle")`)
 		* Usage: each middleware in the built in middleware is a function which returns a middleware function to be used (ex: `client.use("message", wiggle.middleware.commandParser())`)
 		* argHandler\<Function()>
 			* Parses arguments into their correct types based off user input
@@ -90,10 +90,10 @@ Wiggle Methods:
 	* Returns: instance of Wiggle that the method was called on
 
 ## Categories
-Categories are a set of commands, grouped together by similarties. For example, `kick`, `ban` and `mute` might be a moderator category. Categories with `eris-wiggle` are made simple.
+Categories are a set of commands, grouped together by similarties. For example, `kick`, `ban` and `mute` might be a moderator category. Categories with `discord.js-wiggle` are made simple.
 
 Creating a category:
-* Accessing: `wiggle.Category(...params)` is a function that returns a new instance of a category. All of the parameters are passed to the constructor (not a instance of wiggle, but what is returned from `require("eris-wiggle")`)
+* Accessing: `wiggle.Category(...params)` is a function that returns a new instance of a category. All of the parameters are passed to the constructor (not a instance of wiggle, but what is returned from `require("discord.js-wiggle")`)
 * Constructor parameters: (name\<String>, _commandOptions\<Object>_)
 	* Command options: an object that sets default comamnd options to all commands within the category
 
@@ -138,7 +138,7 @@ Constructor options (all optional):
 				* `image` - returns a image url based off attachments, link, emoji, or user avatar
 				* `int` - returns an integer
 					* Accepts `min` and `max` options
-				* `invite` - returns a invite object, as returned from `<ErisClient>.getInvite`
+				* `invite` - returns a invite object, as returned from `<DiscordClient>.getInvite`
 				* `link` - returns a link
 				* `member` - returns a member from the server the command was executed in
 				* `role` - returns a role
@@ -268,7 +268,7 @@ The command run function is called with a parameter:
 		* Reference to the wiggle instance attached to the command
 
 ## Locales
-Locales are a way to define the language of a user. eris-wiggle has built-in support for easy implementation of locales.
+Locales are a way to define the language of a user. discord.js-wiggle has built-in support for easy implementation of locales.
 
 To use locales, create a folder containg files of each locale. Each file should be named the name of the locale it corresponds to. For example, for an English locale, the file would be `en.json`.
 
@@ -294,7 +294,7 @@ These functions accept 2 parameters:
 	* Default value: `{}`
 * ex (extending usage of the example file above):
 ```js
-const wiggle = require("eris-wiggle");
+const wiggle = require("discord.js-wiggle");
 const client = wiggle();
 client.set("locales", "locales");
 client.command("ping", { replyResult: true }, ctx => {
