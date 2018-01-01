@@ -7,6 +7,8 @@ module.exports = {
         // describe arg[0]
         // type "text" is used by default, so no need to declare it each time
         // the generated usage here will be "test <add | remove>"
+        // defaultLabel will set a label for the VALUE branch
+        defaultLabel: "some value",
         choice: {
             // "add" is one of the 2 correct options of arg[0]
             add: {
@@ -36,8 +38,12 @@ module.exports = {
                 }
             },
             // "remove" is one of the 2 correct options of arg[0]
-            remove: null
+            remove: null,
             // the option is null, meaning that "remove" is the end of this argument path
+            VALUE: {
+                type: "boolean",
+                choice: { VALUE: null }
+            }
         }
     }
 };
