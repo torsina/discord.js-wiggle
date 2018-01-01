@@ -190,8 +190,10 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
             usage += argTree.label ? `<${argTree.label}> ` : `<${argsLeft[0]}> `;
         }
         // get the index of the choice in every case
+        let isVALUE = false;
         if(choiceIndex === -1) {
             choiceIndex = choiceArray.indexOf("VALUE");
+            isVALUE = true;
             if(choiceIndex === -1) {
                 throw missingArg(message, usage);
             }
@@ -199,6 +201,10 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
         const selectedChoice = choices[choiceArray[choiceIndex]];
         // set default type to "text"
         const type = argTree.type || "text";
+        // we declare the label for the VALUE case
+        if (isVALUE && argTree.defaultLabel) {
+            selectedChoice.label = argTree.defaultLabel;
+        }
         // whether we're at a possible end of path or not
         // we're using null here since arguments at end of path will equal to null
         const isEnd = selectedChoice === null || (argTree.last && (argsLeft.length === 1));

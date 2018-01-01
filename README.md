@@ -167,6 +167,7 @@ Constructor options (all optional):
     * <arg>.label is optional, the default value is generated from the property names of <argTree>.choice
     * Will replace <command>.args if used
     * <argTree>.choice.VALUE indicates an arg that is a user input
+    * <argTree>.defaultLabel will define the label of the argument if we use the user input (VALUE)
     * <arg>.last\<Boolean> is optional, it prevents the bot asking for a value after this arg if true. Consider it as a possible end for the arg chain
     * See examples for more detail
     * Output will still be in <context>.args as an array
