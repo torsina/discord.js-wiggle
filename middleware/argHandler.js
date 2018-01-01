@@ -212,9 +212,6 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
         const isEnd = selectedChoice === null || (argTree.last && (argsLeft.length === 1));
         // wheter we need to concat what's left to the argument input into the last argument
         const input = selectedChoice === null && argTree.last ? argsLeft.join(" ") : argsLeft[0];
-        if(input === "" || input === undefined) throw missingArg(message, usage);
-        // resolve the type of the input
-        result.push(await resolver[type](input, message, argTree));
         // do the usage of the next argument to have clearer usage display on error
         // it's useless to do it for the last argument when isEnd is true since there is no more prevision to do
         if(!(selectedChoice === null) && !isEnd) {
@@ -232,6 +229,9 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
                 usage += selectedChoice.label ? `<${selectedChoice.label}> ` : `<${argsLeft[1]}> `;
             }
         }
+        if(input === "" || input === undefined) throw missingArg(message, usage);
+        // resolve the type of the input
+        result.push(await resolver[type](input, message, argTree));
         // if we run out of input argument before the end of the path
         if(argsLeft.length === 1 && selectedChoice !== null) {
             throw missingArg(message, usage);
