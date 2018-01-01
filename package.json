@@ -1,6 +1,6 @@
 {
   "name": "discord.js-wiggle",
-  "version": "0.2",
+  "version": "0.3",
   "description": "Command router for discord.js",
   "main": "index.js",
   "scripts": {
