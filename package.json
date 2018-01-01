@@ -1,6 +1,6 @@
 {
   "name": "discord.js-wiggle",
-  "version": "0.3",
+  "version": "0.3.0",
   "description": "Command router for discord.js",
   "main": "index.js",
   "scripts": {
@@ -22,9 +22,7 @@
     "url": "https://github.com/torsina/discord.js-wiggle/issues"
   },
   "dependencies": {
-    "discord.js": "^11.2.1"
-  },
-  "optionalDependencies": {
+    "discord.js": "^11.2.1",
     "superagent": "^3.6.1"
   }
 }
