@@ -152,7 +152,8 @@ module.exports = async (context, next, wiggle) => {
 };
 
 /**
- * base is the first arg, properties of argTree are choice and the possible argument resolver options(if VALUE is used) for arg 0
+ * base is the first arg,
+ * properties of argTree are choice and the possible argument resolver options(if VALUE is used) for arg 0
  * choice contains all of the possibilities for arg 0 in the properties keys of this object
  *
  * once one level passed, we're in the property of choice corresponding to the argument input,
@@ -160,7 +161,8 @@ module.exports = async (context, next, wiggle) => {
  *
  * VALUE as option means a user input
  *
- * the `last` property as option for a argument means that even if the input contains more words than argument, the argument parsing will stop and only one word will be given to the last argument.
+ * the `last` property as option for a argument means that even if the input contains more words than argument,
+ * the argument parsing will stop and only one word will be given to the last argument.
  * there will be no parsing error if the last input argument has `last` set to true in it's options
  * @param argTree
  * @param args
@@ -202,7 +204,7 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
         // set default type to "text"
         const type = argTree.type || "text";
         // we declare the label for the VALUE case
-        if (isVALUE && argTree.defaultLabel) {
+        if(isVALUE && argTree.defaultLabel) {
             selectedChoice.label = argTree.defaultLabel;
         }
         // whether we're at a possible end of path or not
@@ -210,8 +212,6 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
         const isEnd = selectedChoice === null || (argTree.last && (argsLeft.length === 1));
         // wheter we need to concat what's left to the argument input into the last argument
         const input = selectedChoice === null && argTree.last ? argsLeft.join(" ") : argsLeft[0];
-        // resolve the type of the input
-        result.push(await resolver[type](input, message, argTree));
         // do the usage of the next argument to have clearer usage display on error
         // it's useless to do it for the last argument when isEnd is true since there is no more prevision to do
         if(!(selectedChoice === null) && !isEnd) {
@@ -229,6 +229,9 @@ async function recursiveArgTree(argTree, args, message, result = [], usage = "")
                 usage += selectedChoice.label ? `<${selectedChoice.label}> ` : `<${argsLeft[1]}> `;
             }
         }
+        if(input === "" || input === undefined) throw missingArg(message, usage);
+        // resolve the type of the input
+        result.push(await resolver[type](input, message, argTree));
         // if we run out of input argument before the end of the path
         if(argsLeft.length === 1 && selectedChoice !== null) {
             throw missingArg(message, usage);
@@ -265,77 +268,3 @@ function missingArg(message, usage) {
         }
     });
 }
-/**
- *
- async function recursiveArgTree(argTree, args, message, result = [], usage = "") { // eslint-disable-line
-    const argsLeft = args.slice();
-    if(argTree.next && !(argTree.last && argsLeft.length === 0)) {
-        try {
-            const nextArgs = Object.keys(argTree.next);
-            let nextIndex = nextArgs.indexOf(argsLeft[0]);
-            const next = nextArgs[nextIndex];
-            if(nextIndex === -1) {
-                nextIndex = nextArgs.indexOf("VALUE");
-                usage += argTree.label ? `<${argTree.label}> ` : `<${nextArgs.join(" | ")}> `;
-            } else {
-                usage += argTree.label ? `${argTree.label} ` : `${next} `;
-            }
-            if(nextIndex === -1 || argsLeft.length === 0) {
-                const error = {
-                    error: "wiggle.partialArgs",
-                    data: {
-                        command: message.command.name,
-                        usage: usage
-                    }
-                };
-                const { embed } = new EmbedError(message, error);
-                message.channel.send(embed);
-            } else {
-                console.log(argTree, argsLeft[0]);
-                result[result.length] = await resolver[argTree.type](argsLeft[0], message, argTree);
-                argsLeft.splice(0, 1);
-                return await recursiveArgTree(argTree.next[nextArgs[nextIndex]], argsLeft, message, result, usage);
-            }
-        } catch(err) {
-            const error = {
-                error: err.message,
-                data: err.data
-            };
-            if(error.data) error.data.usage = usage;
-            const { embed } = new EmbedError(message, error);
-            message.channel.send(embed);
-        }
-    } else {
-        const usedArg = args.join(" ");
-        try {
-            usage += argTree.label ? `<${argTree.label}> ` : "<value>";
-            if(argTree.last) {
-                result.push(usedArg);
-                return result;
-            }
-            if(usedArg === "") {
-                const error = {
-                    error: "wiggle.partialArgsEnd",
-                    data: {
-                        command: message.command.name,
-                        usage: usage
-                    }
-                };
-                const { embed } = new EmbedError(message, error);
-                return message.channel.send(embed);
-            }
-            result[result.length] = await resolver[argTree.type](usedArg, message, argTree);
-            return result;
-        } catch(err) {
-            const error = {
-                error: err.message,
-                data: err.data
-            };
-            error.data.usage = usage;
-            const { embed } = new EmbedError(message, error);
-            message.channel.send(embed);
-        }
-    }
-}
-
- */
