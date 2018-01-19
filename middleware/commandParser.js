@@ -79,7 +79,6 @@ const commandParser = async (message, next, wiggle) => {
         const { embed } = new EmbedError(message, error);
         return message.channel.send(embed);
     }
-    console.log(message.command);
     if(message.command.nsfwOnly && message.channel && !message.channel.nsfw) {
         const { embed } = new EmbedError(message, { error: "wiggle.commands.error.nsfwOnly" });
         return message.channel.send(embed);
