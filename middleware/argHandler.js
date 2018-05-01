@@ -99,4 +99,5 @@ module.exports = async (context, next, wiggle) => {
     }
     context.flags = flags;
     context.args = content;
+    return next();
 };
