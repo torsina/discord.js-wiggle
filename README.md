@@ -218,7 +218,7 @@ Properties:
 	* Contains usage of command, eg `[]`, `<text>`, `[text]`, `<user> [text]`, etc
 	* Example with flags: `<text> ...--time|-t [int=5]`
 
-The command run function is called with a parameter: 
+The command run function is called with a parameter:
 * Context\<Object>
 	* Object containing useful properties
 	* args\<Array\<*>>
@@ -270,7 +270,7 @@ The command run function is called with a parameter:
 ## Locales
 Locales are a way to define the language of a user. discord.js-wiggle has built-in support for easy implementation of locales.
 
-To use locales, create a folder containg files of each locale. Each file should be named the name of the locale it corresponds to. For example, for an English locale, the file would be `en.json`.
+To use locales, create a folder containg files of each locale. Each file should be named the name of the locale it corresponds to. Each locale file will need a pair of a .json and a .js file. Put all the basic text of your locales in the .json file, and do the locale logic (ex: string concatenation) in the js file, see examples for details. For example, for an English locale, the files would be `en.json` and `en.js`.
 
 The locale file:
 * The locale file should be composed of fields, or context, and then the message
